@@ -4,3 +4,12 @@
 
 # LangGraph
 .langgraph_api/
+
+# venv
+.venv/
+
+# Python
+__pycache__/
+
+# API keys and environment variables
+.env
