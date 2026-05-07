@@ -1,2 +1,2 @@
 # MinistryPal
-An AI Chat Assistant for Solving Ministry Problems
+A collection of AI chatbot agents geared for ministry workflows.
