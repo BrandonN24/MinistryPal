@@ -1,42 +1,103 @@
 "use client";
 
 import { useState } from "react";
-import { sendMessage } from "../lib/api";
+import { streamMessage } from "../lib/api";
+
+type Message = {
+    role: string;
+    content: string;
+};
 
 export default function Chat() {
-    const [messages, setMessages] = useState<string[]>([]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleSend = async () => {
-        if (!input.trim()) return;
+        if (!input || loading) return;
 
-        const userMsg = `You: ${input}`;
+        setLoading(true);
+
+        const userMsg = { role: "user", content: input };
         setMessages((prev) => [...prev, userMsg]);
 
-        const res = await sendMessage(input);
-        const botMsg = `MinistryPal: ${res.response}`;
+        let assistantText = "";
 
-        setMessages((prev) => [...prev, botMsg]);
+        setMessages(prev => [
+            ...prev,
+            {
+                role: "assistant",
+                content: ""
+            }
+        ]);
+
+        await streamMessage(
+            input,
+            (chunk) => {
+                assistantText += chunk;
+
+                setMessages(prev => {
+                    const updated = [...prev];
+
+                    updated[
+                        updated.length - 1
+                    ] = {
+                        role: "assistant",
+                        content: assistantText
+                    };
+                    
+                    return updated;
+                });
+            }
+        );
+
         setInput("");
-    }
+        setLoading(false);
+
+    };
 
     return (
-        <div style={{ padding: 20}}>
-            <div style={{minHeight: 300}}>
-                {messages.map((msg, idx) => (
-                    <p key={idx}>{msg}</p>
-                ))}
-            </div>
-            <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                    if (e.key === "Enter") handleSend();
-                }}
-                placeholder="Type your message..."
-                style={{ width: "80%", padding: 10, marginRight: 10 }}
-            />
-            <button onClick={handleSend} style={{ padding: "10px 20px" }}>Send</button>
+        <div style={{ padding: 24 }}>
+
+        <h1>Chat Log</h1>
+
+        <div
+            style={{
+            minHeight: 300,
+            marginBottom: 20
+            }}
+        >
+            {messages.map((msg, i) => (
+            <p key={i}>
+                <strong>
+                {msg.role}:
+                </strong>{" "}
+                {msg.content}
+            </p>
+            ))}
+        </div>
+
+        <input
+            value={input}
+            onChange={(e) =>
+            setInput(e.target.value)
+            }
+            onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                    handleSend();
+                }
+            }}
+        />
+
+        <button
+            onClick={handleSend}
+            disabled={loading}
+        >
+            {loading
+            ? "Streaming..."
+            : "Send"}
+        </button>
+
         </div>
     );
 }
