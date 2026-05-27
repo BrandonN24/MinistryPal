@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { streamMessage } from "../lib/api";
+import MessageBubble from "./MessageBubble";
 
 type Message = {
     role: string;
@@ -62,18 +63,20 @@ export default function Chat() {
         <h1>Chat Log</h1>
 
         <div
+            className="markdown-body"
             style={{
-            minHeight: 300,
-            marginBottom: 20
+                marginBottom: 16,
+                padding: 12,
+                borderRadius: 8,
+                lineHeight: 1.6
             }}
         >
             {messages.map((msg, i) => (
-            <p key={i}>
-                <strong>
-                {msg.role}:
-                </strong>{" "}
-                {msg.content}
-            </p>
+                <MessageBubble 
+                    key={i} 
+                    role={msg.role} 
+                    content={msg.content} 
+                />
             ))}
         </div>
 
