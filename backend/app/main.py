@@ -1,8 +1,10 @@
+"""Main application entry point for the MinistryPal API."""
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes import router
-    
+
 app = FastAPI()
 
 # CORS configuration
@@ -16,6 +18,8 @@ app.add_middleware(
 
 app.include_router(router)
 
+
 @app.get("/")
 def root():
+    """Root endpoint to verify the API is running."""
     return {"message": "Welcome to the MinistryPal API!"}
