@@ -1,3 +1,5 @@
+"""Routes for the MinistryPal API, including the chat endpoint."""
+
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 
@@ -24,5 +26,6 @@ async def stream_chat(payload: dict):
 
 @router.post("/chat", response_model=ChatResponse)
 def chat(req: ChatRequest):
+    """Endpoint for handling chat requests."""
     output = run_chat(req.message)
     return ChatResponse(response=output)
