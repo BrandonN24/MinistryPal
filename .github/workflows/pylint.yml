@@ -1,4 +1,4 @@
-name: Pylint Backend
+name: Backend Linter
 
 on: [push]
 
@@ -19,8 +19,15 @@ jobs:
         cd backend
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+    - name: Install black
+      run: |
+        pip install black
+    - name: Check formatting with Black
+      run: |
+        run: black --check .
+    - name: Install pylint
+      run: |
         pip install pylint
-        
     - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py')
