@@ -10,6 +10,7 @@ from app.chains.stream_chain import generate_stream
 
 router = APIRouter()
 
+
 @router.post("/chat/stream")
 async def stream_chat(payload: dict):
 
@@ -18,11 +19,9 @@ async def stream_chat(payload: dict):
     async def token_generator():
         async for token in generate_stream(message):
             yield token
-    
-    return StreamingResponse(
-        token_generator(),
-        media_type="text/plain"
-    )
+
+    return StreamingResponse(token_generator(), media_type="text/plain")
+
 
 @router.post("/chat", response_model=ChatResponse)
 def chat(req: ChatRequest):
