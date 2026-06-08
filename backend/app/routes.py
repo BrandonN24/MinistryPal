@@ -13,7 +13,7 @@ router = APIRouter()
 
 @router.post("/chat/stream")
 async def stream_chat(payload: dict):
-
+    """Endpoint for handling streaming chat requests."""
     message = payload["message"]
 
     async def token_generator():
