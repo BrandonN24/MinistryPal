@@ -24,7 +24,7 @@ jobs:
         pip install black
     - name: Check formatting with Black
       run: |
-        run: black --check .
+        black --check .
     - name: Install pylint
       run: |
         pip install pylint
